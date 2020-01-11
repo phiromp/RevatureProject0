@@ -49,16 +49,20 @@ public class CarDealership {
 		
 		switch(input){
 		case 1:
-			System.out.println("hi user");
+			System.out.println("hi User");
+			new User();
 			break;
 		case 2:
-			System.out.println("hi customer");
+			System.out.println("hi Customer");
+			new Customer();
 			break;
 		case 3:
 			System.out.println("hi employee");
+			new Employee();
 			break;
 		case 4:
 			System.out.println("hi system");
+			new SystemApp();
 			break;
 		default:
 			System.out.println("not valid option");
@@ -66,6 +70,6 @@ public class CarDealership {
 		
 		
 	}
-	
+
 
 }
