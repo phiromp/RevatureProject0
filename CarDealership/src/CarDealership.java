@@ -1,3 +1,5 @@
+import java.awt.List;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /*# Car Dealership
@@ -17,44 +19,34 @@ import java.util.Scanner;
 5. 100% test coverage using JUnit Java testing framework (excluding Pojos).
 
 ## User Stories
-* As a user, I can login.
-* As an employee, I can add a car to the lot.
-* As a customer, I can view the cars on the lot.
-* As a customer, I can make an offer for a car.
-* As an employee, I can accept or reject an offer for a car.
-* As the system, I reject all other pending offers for a car when an offer is accepted.
-* As a user, I can register for a customer account.
-* As an employee, I can remove a car from the lot.
-* As a customer, I can view the cars that I own.
-* As a customer, I can view my remaining payments for a car.
-* As an employee, I can view all payments.
-* As the system, I can calculate the monthly payment.
+
 */
 
 public class CarDealership {
-
+	static ArrayList<Object> customerList = new ArrayList<Object>();
 
 	public static void main(String[] args) {
 		int input;
-		
+		customerList.add(new Customer("joe", "pass"));
+		customerList.add(new Customer("jim", "pass2"));
+		customerList.add(new Customer("jack", "pass3"));
+
 		System.out.println("Welcome to the Car Dealership! Are you a:");
-		System.out.println("[1] User");
+		System.out.println("[1] New User");
 		System.out.println("[2] Customer");
 		System.out.println("[3] Employee");
 		System.out.println("[4] System");
 
-
 		Scanner s = new Scanner(System.in);
 		input = s.nextInt();
-		
-		switch(input){
+		switch (input) {
 		case 1:
 			System.out.println("hi User");
-			new User();
+			NewUser();
 			break;
 		case 2:
 			System.out.println("hi Customer");
-			new Customer();
+			Customer.CustomerSignIn();
 			break;
 		case 3:
 			System.out.println("hi employee");
@@ -67,9 +59,23 @@ public class CarDealership {
 		default:
 			System.out.println("not valid option");
 		}
-		
-		
+		s.close();
+
 	}
 
+	private static void NewUser() {
+		Scanner s = new Scanner(System.in);
+		System.out.println("Sign up for a new account.");
+		System.out.println("Enter desired username: ");
+		String user = s.next();
+		System.out.println("Enter desired password: ");
+		String pass = s.next();
+		Customer guy = new Customer(user, pass);
+		customerList.add(guy);
+
+		System.out.println("username: " + guy.getUsername());
+		System.out.println("password: " + guy.getPassword());
+		s.close();
+	}
 
 }
