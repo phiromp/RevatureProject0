@@ -1,6 +1,7 @@
 import java.awt.List;
 import java.util.ArrayList;
 import java.util.Scanner;
+import org.apache.log4j.*;
 
 /*# Car Dealership
 ## Description
@@ -24,58 +25,62 @@ import java.util.Scanner;
 
 public class CarDealership {
 	static ArrayList<Object> customerList = new ArrayList<Object>();
+	static final Logger logger = Logger.getLogger(CarDealership.class);
+	static Scanner sc = new Scanner(System.in); 
 
 	public static void main(String[] args) {
-		int input;
+		logger.setLevel(Level.DEBUG);
 		customerList.add(new Customer("joe", "pass"));
 		customerList.add(new Customer("jim", "pass2"));
 		customerList.add(new Customer("jack", "pass3"));
 
-		System.out.println("Welcome to the Car Dealership! Are you a:");
-		System.out.println("[1] New User");
-		System.out.println("[2] Customer");
-		System.out.println("[3] Employee");
-		System.out.println("[4] System");
+		logger.debug("Hello World!");
+		mainMenu(sc);
 
-		Scanner s = new Scanner(System.in);
-		input = s.nextInt();
+	}
+
+	public static void mainMenu(Scanner sc) {
+		int input;
+
+		System.out.println("\nWelcome to the Main Menu!");
+		System.out.println("[1] New User Sign Up");
+		System.out.println("[2] Login as Customer");
+		System.out.println("[3] Login as Employee");
+		System.out.println("[4] System Admin");
+				
+		input = sc.nextInt();
 		switch (input) {
 		case 1:
-			System.out.println("hi User");
-			NewUser();
+			NewUser(sc);
 			break;
 		case 2:
-			System.out.println("hi Customer");
-			Customer.CustomerSignIn();
+			Customer.CustomerSignIn(sc);
 			break;
 		case 3:
-			System.out.println("hi employee");
 			new Employee();
+			Employee.employeeMainMenu(sc);
 			break;
 		case 4:
-			System.out.println("hi system");
 			new SystemApp();
 			break;
 		default:
 			System.out.println("not valid option");
+			mainMenu(sc);
+		
 		}
-		s.close();
-
 	}
 
-	private static void NewUser() {
-		Scanner s = new Scanner(System.in);
+	private static void NewUser(Scanner sc) {
 		System.out.println("Sign up for a new account.");
 		System.out.println("Enter desired username: ");
-		String user = s.next();
+		String user = sc.next();
 		System.out.println("Enter desired password: ");
-		String pass = s.next();
+		String pass = sc.next();
 		Customer guy = new Customer(user, pass);
 		customerList.add(guy);
 
-		System.out.println("username: " + guy.getUsername());
-		System.out.println("password: " + guy.getPassword());
-		s.close();
+		System.out.println("Account Created!");
+		mainMenu(sc);
 	}
 
 }
