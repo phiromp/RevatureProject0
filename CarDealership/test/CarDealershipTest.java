@@ -3,6 +3,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+
 import org.junit.Test;
 
 public class CarDealershipTest {
@@ -39,7 +41,8 @@ public class CarDealershipTest {
 	public void testSerialize() {
 		PaymentPlan planExample = new PaymentPlan(6000, "2012 Ford Mustang", "Username");
 		PaymentPlan.serialize(planExample);
-		PaymentPlan test = Customer.deserialize();
+		ArrayList<PaymentPlan> testPlan = Customer.deserialize();
+		PaymentPlan test = testPlan.get(testPlan.size()-1);
 		
 		assertEquals(6000, (test.getMoneyOwed()));
 		assertTrue(planExample.getCar().equals(test.getCar()));
@@ -51,7 +54,8 @@ public class CarDealershipTest {
 	public void testSomeWrongSerialize() {
 		PaymentPlan planExample = new PaymentPlan(10000, "cool car", "Username");
 		PaymentPlan.serialize(planExample);
-		PaymentPlan test = Customer.deserialize();
+		ArrayList<PaymentPlan> testPlan = Customer.deserialize();
+		PaymentPlan test = testPlan.get(testPlan.size()-1);
 		
 		assertEquals(10000, (test.getMoneyOwed()));
 		assertFalse("lame car".equals(test.getCar()));
@@ -63,7 +67,7 @@ public class CarDealershipTest {
 	public void testAllWrongSerialize() {
 		PaymentPlan planExample = new PaymentPlan(10000, "2012 Ford Mustang", "Username");
 		PaymentPlan.serialize(planExample);
-		PaymentPlan test = Customer.deserialize();
+		PaymentPlan test = Customer.deserialize().get(0);
 		
 		assertNotEquals(1234, (test.getMoneyOwed()));
 		assertFalse("2011 Ford Mustand".equals(test.getCar()));
@@ -76,10 +80,10 @@ public class CarDealershipTest {
 		PaymentPlan plan = new PaymentPlan(1000, "car", "user");
 		PaymentPlan.serialize(plan);
 		Customer me = new Customer("user", "pass");
-		Customer.makePayment(100, plan, me);
-		PaymentPlan test = Customer.deserialize();
+		ArrayList<PaymentPlan> test = Customer.deserialize();
+		Customer.makePayment(100, test, me, 1);
 		
-		assertEquals(900, test.getMoneyOwed());
+		assertEquals(900, test.get(0).getMoneyOwed());
 	}
 	
 	@Test
@@ -87,10 +91,10 @@ public class CarDealershipTest {
 		PaymentPlan plan = new PaymentPlan(1000, "car", "user");
 		PaymentPlan.serialize(plan);
 		Customer me = new Customer("user", "pass");
-		Customer.makePayment(100, plan, me);
-		PaymentPlan test = Customer.deserialize();
+		ArrayList<PaymentPlan> test = Customer.deserialize();
+		Customer.makePayment(100, test, me, 1);
 		
-		assertNotEquals(100, test.getMoneyOwed());
+		assertNotEquals(100, test.get(0).getMoneyOwed());
 	}
 	
 }

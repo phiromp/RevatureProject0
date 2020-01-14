@@ -1,6 +1,7 @@
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 
 @SuppressWarnings("serial")
 public class PaymentPlan implements java.io.Serializable {
@@ -9,16 +10,17 @@ public class PaymentPlan implements java.io.Serializable {
 	static int planCount = 0;
 	private String car;
 	private String user;
+	static ArrayList<PaymentPlan> plansList = new ArrayList<PaymentPlan>();
 	
 	public PaymentPlan(int price, String car, String user) {
 		this.moneyOwed = price;
 		this.monthlyPayment = (price/60);
 		this.car = car;
 		this.user = user;
-		
 	}
 
 	static void serialize(PaymentPlan plan) {
+		plansList.add(plan);
 		String filename = "file.ser"; 
         
         // Serialization  
@@ -29,7 +31,7 @@ public class PaymentPlan implements java.io.Serializable {
             ObjectOutputStream out = new ObjectOutputStream(file); 
               
             // Method for serialization of object 
-            out.writeObject(plan); 
+            out.writeObject(plansList); 
               
             out.close(); 
             file.close(); 

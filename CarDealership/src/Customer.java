@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 
 // As a customer, I can view the cars on the lot.
 // As a customer, I can make an offer for a car.
@@ -141,14 +140,18 @@ public class Customer {
 	
 	private static void remainPay(Customer me) {
 		
-		PaymentPlan plan = deserialize();		
-            
-        //System.out.println("Object has been de-serialized "); 
-        String format = "You owe $" + plan.getMoneyOwed() + " on " + plan.getCar() +
-        				"\nMonthly payment: $" + plan.getMonthlyPayment();
-        System.out.println(format);
-        //customerHome(sc, me);
-        
+		ArrayList<PaymentPlan> plan = deserialize();		
+        int count = 0;
+		for(PaymentPlan myPlan : plan) {
+			if(myPlan.getUser().equals(me.username)) {
+		        //System.out.println("Object has been de-serialized "); 
+		        String format = "["+count+"] You owe $" + myPlan.getMoneyOwed() + " on " + myPlan.getCar() +
+		        				"\nMonthly payment: $" + myPlan.getMonthlyPayment();
+		        System.out.println(format);
+	        //customerHome(sc, me);
+			}
+			count++;
+		}
         System.out.println("Make a payment?");
         System.out.println("[1] yes");
         System.out.println("[2] no");
@@ -157,9 +160,13 @@ public class Customer {
         
         switch (input) { 
 		case 1: 
+	        
+	        System.out.println("Which car");
+	        int index = CarDealership.sc.nextInt();
+	        
 			System.out.println("Enter how much ($): ");
 			int pay = CarDealership.sc.nextInt();
-			makePayment(pay, plan, me);
+			makePayment(pay, plan, me, index);
 			customerHome(me);
 			break;
 		case 2:
@@ -170,15 +177,17 @@ public class Customer {
 			customerHome(me); 
         } 
 	}
-
 	
-	public static void makePayment(int pay, PaymentPlan plan, Customer me) {
-		payments.add(me.username + " paid " + String.valueOf(pay) + " for " + plan.getCar());
-		plan.setMoneyOwed(plan.getMoneyOwed()-pay);
-		PaymentPlan.serialize(plan);		
+	public static void makePayment(int pay, ArrayList<PaymentPlan> plan, Customer me, int index) {
+		index -= 1;
+		int newMoneyOwed = (plan.get(index).getMoneyOwed()-pay);
+		payments.add(me.username + " paid " + String.valueOf(pay) + " for " + plan.get(index).getCar());
+		plan.get(index).setMoneyOwed(newMoneyOwed);
+		PaymentPlan.plansList.get(index).setMoneyOwed(newMoneyOwed);
+		//PaymentPlan.serialize(PaymentPlan.plansList);		
 	}
 
-	public static PaymentPlan deserialize() {
+	public static ArrayList<PaymentPlan> deserialize() {
 		String filename = "file.ser";
 		try
         {    
@@ -187,7 +196,8 @@ public class Customer {
             ObjectInputStream in = new ObjectInputStream(file); 
               
             // Method for de-serialization of object 
-            PaymentPlan plan = (PaymentPlan)in.readObject(); 
+            @SuppressWarnings("unchecked")
+			ArrayList<PaymentPlan> plan = (ArrayList<PaymentPlan>)in.readObject(); 
               
             in.close(); 
             file.close(); 
