@@ -39,14 +39,14 @@ public class CarDealershipTest {
 	
 	@Test
 	public void testSerialize() {
-		PaymentPlan planExample = new PaymentPlan(6000, "2012 Ford Mustang", "Username");
+		PaymentPlan planExample = new PaymentPlan(10000, "2012 Ford Mustang", "Username");
 		PaymentPlan.serialize(planExample);
 		ArrayList<PaymentPlan> testPlan = Customer.deserialize();
 		PaymentPlan test = testPlan.get(testPlan.size()-1);
 		
-		assertEquals(6000, (test.getMoneyOwed()));
+		assertEquals(10000, (test.getMoneyOwed()));
 		assertTrue(planExample.getCar().equals(test.getCar()));
-		assertEquals(100, (test.getMonthlyPayment()));
+		assertEquals(166, (test.getMonthlyPayment()));
 		assertTrue(planExample.getUser().equals(test.getUser()));
 	}
 	
@@ -97,4 +97,15 @@ public class CarDealershipTest {
 		assertNotEquals(100, test.get(0).getMoneyOwed());
 	}
 	
+	@Test
+	public void testInvalidEmp() {
+		Employee.employeeList.put("admin", "admin");
+		assertFalse(Employee.checkValidEmp("incorrect", "wrong"));
+	}
+	
+	@Test
+	public void testValidEmp() {
+		Employee.employeeList.put("admin", "admin");
+		assertTrue(Employee.checkValidEmp("admin", "admin"));
+	}
 }

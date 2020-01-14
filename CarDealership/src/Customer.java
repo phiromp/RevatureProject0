@@ -144,52 +144,63 @@ public class Customer {
 			customerHome(me);
 		else {
 			ArrayList<PaymentPlan> plan = deserialize();
-	        int count = 1;
+	        int count = 0;
 			for(PaymentPlan myPlan : plan) {
 				if(myPlan.getUser().equals(me.username)) {
+					count++;
 			        //System.out.println("Object has been de-serialized "); 
 			        String format = "["+count+"] You owe $" + myPlan.getMoneyOwed() + " on " + myPlan.getCar() +
 			        				"\nMonthly payment: $" + myPlan.getMonthlyPayment();
 			        System.out.println(format);
 		        //customerHome(sc, me);
 				}
-				count++;
 			}
-	        System.out.println("Make a payment?");
-	        System.out.println("[1] yes");
-	        System.out.println("[2] no");
-	        
-	        int input = CarDealership.sc.nextInt();
-	        
-	        switch (input) { 
-			case 1: 
+			if(count!=0) {
+		        System.out.println("Make a payment?");
+		        System.out.println("[1] yes");
+		        System.out.println("[2] no");
 		        
-		        System.out.println("Which car");
-		        int index = CarDealership.sc.nextInt();
+		        int input = CarDealership.sc.nextInt();
 		        
-				System.out.println("Enter how much ($): ");
-				int pay = CarDealership.sc.nextInt();
-				makePayment(pay, plan, me, index);
-				customerHome(me);
-				break;
-			case 2:
-				customerHome(me);
-				break; 
-			default:
-				System.out.println("not valid option"); 
-				customerHome(me); 
-	        } 
+		        switch (input) { 
+				case 1: 
+			        
+			        System.out.println("Which car");
+			        int index = CarDealership.sc.nextInt();
+			        
+					System.out.println("Enter how much ($): ");
+					int pay = CarDealership.sc.nextInt();
+					makePayment(pay, plan, me, index);
+					customerHome(me);
+					break;
+				case 2:
+					customerHome(me);
+					break; 
+				default:
+					System.out.println("not valid option"); 
+					customerHome(me); 
+		        }
+			}
+	        else {
+	        	System.out.println("All cars are paid off");
+	        	customerHome(me);
+	        }
 		}
 	}
 	
 	public static void makePayment(int pay, ArrayList<PaymentPlan> plan, Customer me, int index) {
-		index -= 1;
-		int newMoneyOwed = (plan.get(index).getMoneyOwed()-pay);
-		payments.add(me.username + " paid $" + String.valueOf(pay) + " for " + plan.get(index).getCar());
-		plan.get(index).setMoneyOwed(newMoneyOwed);
-		PaymentPlan.plansList.get(index).setMoneyOwed(newMoneyOwed);
-		PaymentPlan update = new PaymentPlan(newMoneyOwed, PaymentPlan.plansList.get(index).getCar(), me.username);
-		PaymentPlan.serialize(update);		
+		if(index > plan.size()) {
+			System.out.println("Not valid option");
+		}
+		else {
+			index -= 1;
+			int newMoneyOwed = (plan.get(index).getMoneyOwed()-pay);
+			payments.add(me.username + " paid $" + String.valueOf(pay) + " for " + plan.get(index).getCar());
+			plan.get(index).setMoneyOwed(newMoneyOwed);
+			PaymentPlan.plansList.get(index).setMoneyOwed(newMoneyOwed);
+			PaymentPlan update = new PaymentPlan(newMoneyOwed, PaymentPlan.plansList.get(index).getCar(), me.username);
+			PaymentPlan.serialize(update);		
+		}
 	}
 
 	public static ArrayList<PaymentPlan> deserialize() {

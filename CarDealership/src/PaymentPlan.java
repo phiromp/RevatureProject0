@@ -29,7 +29,12 @@ public class PaymentPlan implements java.io.Serializable {
 		while(itr.hasNext()){
 			PaymentPlan curr = itr.next();
 		    if(curr.getCar().equals(plan.getCar())){
-		        curr.setMoneyOwed(plan.getMoneyOwed());
+		    	if(plan.getMoneyOwed() <= 0) {
+					itr.remove();
+				}
+		    	else {
+		    		curr.setMoneyOwed(plan.getMoneyOwed());
+		    	}
 		        alreadyExists = true;
 		    }
 		}

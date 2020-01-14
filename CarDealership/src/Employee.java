@@ -55,24 +55,30 @@ public class Employee {
 	private static void viewCarOffers() {
 		for(int i=1; i<=offerList.size(); i++) {
 			System.out.println("["+i+"] "+offerList.get(i-1));
+		} 
+		if(offerList.size()>0) {
+			System.out.println("\n[1] Home");
+			System.out.println("[2] Accept offer");
+			System.out.println("[3] Reject offer");
+			int input = CarDealership.sc.nextInt();
+	
+			switch (input) {
+			case 1:
+				employeeMainMenu();
+				break;
+			case 2:
+				changeOffers(true);
+				break;
+			case 3:
+				changeOffers(false);
+				break;
+			default:
+				System.out.println("not valid option");
+				employeeMainMenu();
+			}
 		}
-		System.out.println("\n[1] Home");
-		System.out.println("[2] Accept any offers?");
-		System.out.println("[3] Reject any offers?");
-		int input = CarDealership.sc.nextInt();
-
-		switch (input) {
-		case 1:
-			employeeMainMenu();
-			break;
-		case 2:
-			changeOffers(true);
-			break;
-		case 3:
-			changeOffers(false);
-			break;
-		default:
-			System.out.println("not valid option");
+		else {
+			System.out.println("No offers currently");
 			employeeMainMenu();
 		}
 	}
@@ -125,7 +131,7 @@ public class Employee {
 	}
 	
 	
-	private static boolean checkValidEmp(String user, String pass) {
+	public static boolean checkValidEmp(String user, String pass) {
 		if(employeeList.containsKey(pass)) {
 			if(employeeList.containsValue(user))
 				return true;
