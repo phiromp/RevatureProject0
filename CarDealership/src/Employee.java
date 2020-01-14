@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Iterator;
 
 // 1. As an employee, I can add a car to the lot.
 // 2. As an employee, I can accept or reject an offer for a car.
@@ -20,6 +21,7 @@ public class Employee {
 		System.out.println("[1] Add/Remove car from the lot");
 		System.out.println("[2] View car offers");
 		System.out.println("[3] View all payments");
+		System.out.println("[4] Logout");
 		
 		int input = sc.nextInt();
 		switch (input) {
@@ -31,6 +33,9 @@ public class Employee {
 			break;
 		case 3:
 			System.out.println("Payments!");
+			break;
+		case 4:
+			CarDealership.mainMenu(sc);
 			break;
 		default:
 			System.out.println("not valid option");
@@ -63,23 +68,74 @@ public class Employee {
 			System.out.println("not valid option");
 			employeeMainMenu(sc);
 		}
-		
 	}
 
 	private static void changeCars(Scanner sc) {
-		// TODO Auto-generated method stub
+		System.out.println("\n[1] Add car to the lot");
+		System.out.println("[2] Remove car from the lot");
+		int input = sc.nextInt();
 		
+		switch (input) {
+		case 1:
+			String in = sc.nextLine();
+			System.out.println("\n[1] Enter car to add to lot (YEAR MAKE MODEL)");
+			in = sc.nextLine();
+			Customer.carList.add(in);
+			CarDealership.logger.info("Employee added " + in + " the lot");
+			Customer.carCount++;
+			employeeMainMenu(sc);
+			break;
+		case 2:
+			System.out.println("\n[1] Which car would you like to remove");
+			Customer.displayCars();
+			input = sc.nextInt();
+			CarDealership.logger.info("Employee removed " + Customer.carList.get(input-1) );
+			Customer.carList.remove(input-1);
+			Customer.carCount--;
+			employeeMainMenu(sc);
+			break;
+		default:
+			System.out.println("not valid option");
+			changeCars(sc);
+		}
 	}
 	
 	private static void changeOffers(Scanner sc, boolean accept) {
 		System.out.println("Which offer?");
 		int i = sc.nextInt();
-		if(accept) 
-			offerList.clear();
-		else
+		// make temp string so system can remove the pending offers on the car that has been sold
+		String temp = offerList.get(i-1).split("on the ")[1];
+		String user = offerList.get(i-1).split(" ")[0];
+		Customer.myCars.put(temp, user);
+		if(accept) {
+			CarDealership.logger.info("Employee accepted offer: " + offerList.get(i-1));
+			
+			Iterator<String> iter = offerList.iterator();
+			while(iter.hasNext()) {
+				if(iter.hasNext()) {
+					String offer = iter.next();
+					if(offer.contains(temp)) {
+						CarDealership.logger.info("System removed pending offer: " + offer);
+						iter.remove();
+						CarDealership.logger.info("Employee removed " + temp);
+						Customer.carList.remove(temp);
+						Customer.carCount--;
+					}
+				}
+			}
+		}
+			/*
+			 * for(String s: offerList) { if(s.contains(temp)) {
+			 * CarDealership.logger.info("System removed pending offer: " + s);
+			 * offerList.remove(s); } }
+			 */
+		else {
+			CarDealership.logger.info("Employee declined offer: " + offerList.get(i-1));
 			offerList.remove(i-1);
+		}
 		employeeMainMenu(sc);
 	}
 	
 	
 }
+	

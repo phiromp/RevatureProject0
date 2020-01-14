@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 // As a customer, I can view the cars on the lot.
@@ -11,6 +13,12 @@ public class Customer {
 	private String username, password;
 	static int carCount = 3;
 	static ArrayList<Object> carList = new ArrayList<Object>(Arrays.asList("2006 Toyota Camry", "2012 Ford Fusion", "2010 Fiat 500"));
+	public static Map<String, String> myCars;
+	static {
+	    myCars = new HashMap<>();
+	    myCars.put("2015 Jeep Wrangler", "joe");
+	    myCars.put("2011 Ford Mustang", "abc");
+	}
 	
 	public Customer(String user, String pass) {
 		super();
@@ -50,7 +58,7 @@ public class Customer {
 			if (user.equals(temp.getUsername()) && pass.equals(temp.getPassword())) {
 				System.out.println("Sign in Successful");
 				Customer me = new Customer(user,pass);
-				CustomerHome(sc, me);
+				customerHome(sc, me);
 			}
 		}
 		//if(!success)
@@ -59,7 +67,7 @@ public class Customer {
 		
 	}
 
-	private static void CustomerHome(Scanner sc, Customer me) {
+	private static void customerHome(Scanner sc, Customer me) {
 		System.out.println("\nWelcome to the Customer home!");
 		System.out.println("[1] View the cars on the lot");
 		System.out.println("[2] Make an offer for a car");
@@ -72,34 +80,38 @@ public class Customer {
 		switch (input) { 
 			case 1: 
 				displayCars();
-				CustomerHome(sc, me);
+				customerHome(sc, me);
 				break;
 			case 2:
 				makeOffer(sc, me);
 				break; 
 			case 3: 
-				viewMyCars();
+				viewMyCars(sc, me);
 				break;
 			case 4: 
-				remainPay(sc);
+				remainPay(sc, me);
 				break; 
 			case 5:
 				CarDealership.mainMenu(sc);
 			default:
 				System.out.println("not valid option"); 
-				CustomerHome(sc, me); 
+				customerHome(sc, me); 
 		} 
 	}
 
-	private static void remainPay(Scanner sc) {
+	private static void remainPay(Scanner sc, Customer me) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	private static void viewMyCars() {
-		// TODO Auto-generated method stub
-		
-	}
+	private static void viewMyCars(Scanner sc, Customer me) {
+		for (Map.Entry<String,String> entry : myCars.entrySet()) {  
+			if(entry.getValue().equals(me.username))
+				System.out.println(entry.getKey());
+    	} 
+		customerHome(sc, me);
+	} 
+
 
 	private static void makeOffer(Scanner sc, Customer me) {
 		displayCars();
@@ -107,11 +119,15 @@ public class Customer {
 		int carChoice = sc.nextInt();
 		System.out.println("How much would you like to offer ($)?");
 		int carOffer = sc.nextInt();
-		Employee.offerList.add(me.getUsername() + " offered $"+ Integer.toString(carOffer) +" on the " + carList.get(carChoice-1));
-		CustomerHome(sc, me);
+		
+		String offerMessage = me.getUsername() + " offered $"+ Integer.toString(carOffer) +" on the " + carList.get(carChoice-1);
+		Employee.offerList.add(offerMessage);
+		CarDealership.logger.info(offerMessage);
+		
+		customerHome(sc, me);
 	}
 
-	private static void displayCars() {
+	static void displayCars() {
 		for(int i=1; i<=carCount; i++) {
 			System.out.println("["+i+"] "+carList.get(i-1));
 		}

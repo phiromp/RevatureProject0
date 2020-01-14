@@ -1,4 +1,10 @@
 import java.awt.List;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Scanner;
 import org.apache.log4j.*;
@@ -28,13 +34,11 @@ public class CarDealership {
 	static final Logger logger = Logger.getLogger(CarDealership.class);
 	static Scanner sc = new Scanner(System.in); 
 
-	public static void main(String[] args) {
-		logger.setLevel(Level.DEBUG);
+	public static void main(String[] args) throws IOException {
+		logger.setLevel(Level.INFO);
 		customerList.add(new Customer("joe", "pass"));
-		customerList.add(new Customer("jim", "pass2"));
-		customerList.add(new Customer("jack", "pass3"));
+		customerList.add(new Customer("abc", "123"));
 
-		logger.debug("Hello World!");
 		mainMenu(sc);
 
 	}
@@ -47,7 +51,7 @@ public class CarDealership {
 		System.out.println("[2] Login as Customer");
 		System.out.println("[3] Login as Employee");
 		System.out.println("[4] System Admin");
-				
+		
 		input = sc.nextInt();
 		switch (input) {
 		case 1:
