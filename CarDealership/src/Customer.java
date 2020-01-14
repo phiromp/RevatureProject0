@@ -140,42 +140,46 @@ public class Customer {
 	
 	private static void remainPay(Customer me) {
 		
-		ArrayList<PaymentPlan> plan = deserialize();		
-        int count = 1;
-		for(PaymentPlan myPlan : plan) {
-			if(myPlan.getUser().equals(me.username)) {
-		        //System.out.println("Object has been de-serialized "); 
-		        String format = "["+count+"] You owe $" + myPlan.getMoneyOwed() + " on " + myPlan.getCar() +
-		        				"\nMonthly payment: $" + myPlan.getMonthlyPayment();
-		        System.out.println(format);
-	        //customerHome(sc, me);
+		if(deserialize() == null)
+			customerHome(me);
+		else {
+			ArrayList<PaymentPlan> plan = deserialize();
+	        int count = 1;
+			for(PaymentPlan myPlan : plan) {
+				if(myPlan.getUser().equals(me.username)) {
+			        //System.out.println("Object has been de-serialized "); 
+			        String format = "["+count+"] You owe $" + myPlan.getMoneyOwed() + " on " + myPlan.getCar() +
+			        				"\nMonthly payment: $" + myPlan.getMonthlyPayment();
+			        System.out.println(format);
+		        //customerHome(sc, me);
+				}
+				count++;
 			}
-			count++;
+	        System.out.println("Make a payment?");
+	        System.out.println("[1] yes");
+	        System.out.println("[2] no");
+	        
+	        int input = CarDealership.sc.nextInt();
+	        
+	        switch (input) { 
+			case 1: 
+		        
+		        System.out.println("Which car");
+		        int index = CarDealership.sc.nextInt();
+		        
+				System.out.println("Enter how much ($): ");
+				int pay = CarDealership.sc.nextInt();
+				makePayment(pay, plan, me, index);
+				customerHome(me);
+				break;
+			case 2:
+				customerHome(me);
+				break; 
+			default:
+				System.out.println("not valid option"); 
+				customerHome(me); 
+	        } 
 		}
-        System.out.println("Make a payment?");
-        System.out.println("[1] yes");
-        System.out.println("[2] no");
-        
-        int input = CarDealership.sc.nextInt();
-        
-        switch (input) { 
-		case 1: 
-	        
-	        System.out.println("Which car");
-	        int index = CarDealership.sc.nextInt();
-	        
-			System.out.println("Enter how much ($): ");
-			int pay = CarDealership.sc.nextInt();
-			makePayment(pay, plan, me, index);
-			customerHome(me);
-			break;
-		case 2:
-			customerHome(me);
-			break; 
-		default:
-			System.out.println("not valid option"); 
-			customerHome(me); 
-        } 
 	}
 	
 	public static void makePayment(int pay, ArrayList<PaymentPlan> plan, Customer me, int index) {

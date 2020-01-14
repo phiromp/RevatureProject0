@@ -93,7 +93,7 @@ public class Employee {
 			employeeMainMenu();
 			break;
 		case 2:
-			System.out.println("\n[1] Which car would you like to remove");
+			System.out.println("\nWhich car would you like to remove");
 			Customer.displayCars();
 			input = CarDealership.sc.nextInt();
 			CarDealership.logger.info("Employee removed " + Customer.carList.get(input-1) );
@@ -140,8 +140,8 @@ public class Employee {
 		String temp = offerList.get(i-1).split("on the ")[1];
 		String user = offerList.get(i-1).split(" ")[0];
 		int offerAmount = Integer.parseInt(offerList.get(i-1).split(" ")[2].substring(1));
-		Customer.myCars.put(temp, user);
 		if(accept) {
+			Customer.myCars.put(temp, user);
 			CarDealership.logger.info("Employee accepted offer: " + offerList.get(i-1));
 			
 			Iterator<String> iter = offerList.iterator();
