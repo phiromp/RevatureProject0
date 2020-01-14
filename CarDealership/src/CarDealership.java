@@ -64,9 +64,6 @@ public class CarDealership {
 			new Employee();
 			Employee.employeeMainMenu(sc);
 			break;
-		case 4:
-			new SystemApp();
-			break;
 		default:
 			System.out.println("not valid option");
 			mainMenu(sc);

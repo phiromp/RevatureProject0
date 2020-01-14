@@ -1,3 +1,6 @@
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,6 +16,7 @@ public class Customer {
 	private String username, password;
 	static int carCount = 3;
 	static ArrayList<Object> carList = new ArrayList<Object>(Arrays.asList("2006 Toyota Camry", "2012 Ford Fusion", "2010 Fiat 500"));
+	static ArrayList<String> payments = new ArrayList<String>();
 	public static Map<String, String> myCars;
 	static {
 	    myCars = new HashMap<>();
@@ -53,8 +57,6 @@ public class Customer {
 		for (int i = 0; i < CarDealership.customerList.size(); i++) {
 			Customer temp = (Customer) CarDealership.customerList.get(i);
 
-			//System.out.println(temp.getUsername());
-			//System.out.println(temp.getPassword());
 			if (user.equals(temp.getUsername()) && pass.equals(temp.getPassword())) {
 				System.out.println("Sign in Successful");
 				Customer me = new Customer(user,pass);
@@ -99,11 +101,6 @@ public class Customer {
 		} 
 	}
 
-	private static void remainPay(Scanner sc, Customer me) {
-		// TODO Auto-generated method stub
-		
-	}
-
 	private static void viewMyCars(Scanner sc, Customer me) {
 		for (Map.Entry<String,String> entry : myCars.entrySet()) {  
 			if(entry.getValue().equals(me.username))
@@ -111,7 +108,6 @@ public class Customer {
     	} 
 		customerHome(sc, me);
 	} 
-
 
 	private static void makeOffer(Scanner sc, Customer me) {
 		displayCars();
@@ -133,6 +129,39 @@ public class Customer {
 		}
 	}
 	
+	private static void remainPay(Scanner sc, Customer me) {
+		PaymentPlan plan = null;
+		String filename = "file.ser";
+		try
+        {    
+            // Reading the object from a file 
+            FileInputStream file = new FileInputStream(filename); 
+            ObjectInputStream in = new ObjectInputStream(file); 
+              
+            // Method for de-serialization of object 
+            plan = (PaymentPlan)in.readObject(); 
+              
+            in.close(); 
+            file.close(); 
+            
+            System.out.println("Object has been deserialized "); 
+            String format = "You owe $" + plan.getMoneyOwed() + " on " + plan.getCar() +
+            				"\nMonthly payment: $" + plan.getMonthlyPayment();
+            System.out.println(format);
+            customerHome(sc, me);
+        } 
+          
+        catch(IOException ex) 
+        { 
+            System.out.println("IOException is caught"); 
+        } 
+          
+        catch(ClassNotFoundException ex) 
+        { 
+            System.out.println("ClassNotFoundException is caught"); 
+        } 
+		
+	}
 	
 
 }

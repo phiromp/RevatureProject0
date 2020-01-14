@@ -106,6 +106,7 @@ public class Employee {
 		// make temp string so system can remove the pending offers on the car that has been sold
 		String temp = offerList.get(i-1).split("on the ")[1];
 		String user = offerList.get(i-1).split(" ")[0];
+		int offerAmount = Integer.parseInt(offerList.get(i-1).split(" ")[2].substring(1));
 		Customer.myCars.put(temp, user);
 		if(accept) {
 			CarDealership.logger.info("Employee accepted offer: " + offerList.get(i-1));
@@ -120,6 +121,9 @@ public class Employee {
 						CarDealership.logger.info("Employee removed " + temp);
 						Customer.carList.remove(temp);
 						Customer.carCount--;
+						PaymentPlan plan = new PaymentPlan(offerAmount, temp, user);
+						PaymentPlan.serialize(plan);
+						PaymentPlan.planCount++;
 					}
 				}
 			}
