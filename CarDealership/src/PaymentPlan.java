@@ -34,7 +34,7 @@ public class PaymentPlan implements java.io.Serializable {
             out.close(); 
             file.close(); 
               
-            System.out.println("Object has been serialized"); 
+            //System.out.println("Object has been serialized"); 
   
         } 
           

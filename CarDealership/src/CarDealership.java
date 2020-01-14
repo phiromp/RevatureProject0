@@ -50,7 +50,6 @@ public class CarDealership {
 		System.out.println("[1] New User Sign Up");
 		System.out.println("[2] Login as Customer");
 		System.out.println("[3] Login as Employee");
-		System.out.println("[4] System Admin");
 		
 		input = sc.nextInt();
 		switch (input) {

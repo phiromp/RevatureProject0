@@ -54,19 +54,29 @@ public class Customer {
 		//boolean success = true;
 		// Check if customer exists
 
+		boolean validUser = checkValidUser(user, pass);
+		
+		if(validUser) {
+			Customer me = new Customer(user,pass);
+			customerHome(sc, me);
+		}
+		else {
+			//if(!success)
+			System.out.println("unsuccessful");
+			CarDealership.mainMenu(sc);
+		}
+	}
+
+	public static boolean checkValidUser(String user, String pass) {
 		for (int i = 0; i < CarDealership.customerList.size(); i++) {
 			Customer temp = (Customer) CarDealership.customerList.get(i);
 
 			if (user.equals(temp.getUsername()) && pass.equals(temp.getPassword())) {
 				System.out.println("Sign in Successful");
-				Customer me = new Customer(user,pass);
-				customerHome(sc, me);
+				return true;
 			}
 		}
-		//if(!success)
-		System.out.println("unsuccessful");
-		CarDealership.mainMenu(sc);
-		
+		return false;
 	}
 
 	private static void customerHome(Scanner sc, Customer me) {
@@ -130,7 +140,41 @@ public class Customer {
 	}
 	
 	private static void remainPay(Scanner sc, Customer me) {
-		PaymentPlan plan = null;
+		
+		PaymentPlan plan = deserialize();		
+            
+        //System.out.println("Object has been de-serialized "); 
+        String format = "You owe $" + plan.getMoneyOwed() + " on " + plan.getCar() +
+        				"\nMonthly payment: $" + plan.getMonthlyPayment();
+        System.out.println(format);
+        //customerHome(sc, me);
+        
+        System.out.println("Make a payment?");
+        System.out.println("[1] yes");
+        System.out.println("[2] no");
+        
+        int input = sc.nextInt();
+        
+        switch (input) { 
+		case 1: 
+			System.out.println("Enter how much ($): ");
+			int pay = sc.nextInt();
+			payments.add(me.username + " paid " + String.valueOf(pay) + " for " + plan.getCar());
+			plan.setMoneyOwed(plan.getMoneyOwed()-pay);
+			PaymentPlan.serialize(plan);
+			customerHome(sc, me);
+			break;
+		case 2:
+			customerHome(sc, me);
+			break; 
+		default:
+			System.out.println("not valid option"); 
+			customerHome(sc, me); 
+        } 
+	}
+
+	
+	public static PaymentPlan deserialize() {
 		String filename = "file.ser";
 		try
         {    
@@ -139,39 +183,12 @@ public class Customer {
             ObjectInputStream in = new ObjectInputStream(file); 
               
             // Method for de-serialization of object 
-            plan = (PaymentPlan)in.readObject(); 
+            PaymentPlan plan = (PaymentPlan)in.readObject(); 
               
             in.close(); 
             file.close(); 
             
-            System.out.println("Object has been deserialized "); 
-            String format = "You owe $" + plan.getMoneyOwed() + " on " + plan.getCar() +
-            				"\nMonthly payment: $" + plan.getMonthlyPayment();
-            System.out.println(format);
-            //customerHome(sc, me);
-            
-            System.out.println("Make a payment?");
-            System.out.println("[1] yes");
-            System.out.println("[2] no");
-            
-            int input = sc.nextInt();
-            
-            switch (input) { 
-			case 1: 
-				System.out.println("Enter how much ($): ");
-				int pay = sc.nextInt();
-				payments.add(me.username + " paid " + String.valueOf(pay) + " for " + plan.getCar());
-				customerHome(sc, me);
-				break;
-			case 2:
-				customerHome(sc, me);
-				break; 
-			default:
-				System.out.println("not valid option"); 
-				customerHome(sc, me); 
-		} 
-            
-
+            return plan;
         } 
           
         catch(IOException ex) 
@@ -184,6 +201,7 @@ public class Customer {
             System.out.println("ClassNotFoundException is caught"); 
         } 
 		
+		return null;
 	}
 	
 
