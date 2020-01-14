@@ -148,7 +148,30 @@ public class Customer {
             String format = "You owe $" + plan.getMoneyOwed() + " on " + plan.getCar() +
             				"\nMonthly payment: $" + plan.getMonthlyPayment();
             System.out.println(format);
-            customerHome(sc, me);
+            //customerHome(sc, me);
+            
+            System.out.println("Make a payment?");
+            System.out.println("[1] yes");
+            System.out.println("[2] no");
+            
+            int input = sc.nextInt();
+            
+            switch (input) { 
+			case 1: 
+				System.out.println("Enter how much ($): ");
+				int pay = sc.nextInt();
+				payments.add(me.username + " paid " + String.valueOf(pay) + " for " + plan.getCar());
+				customerHome(sc, me);
+				break;
+			case 2:
+				customerHome(sc, me);
+				break; 
+			default:
+				System.out.println("not valid option"); 
+				customerHome(sc, me); 
+		} 
+            
+
         } 
           
         catch(IOException ex) 

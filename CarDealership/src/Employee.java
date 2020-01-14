@@ -32,7 +32,10 @@ public class Employee {
 			viewCarOffers(sc);
 			break;
 		case 3:
-			System.out.println("Payments!");
+			for(String entry : Customer.payments) {
+				System.out.println(entry);
+			}
+			employeeMainMenu(sc);
 			break;
 		case 4:
 			CarDealership.mainMenu(sc);
