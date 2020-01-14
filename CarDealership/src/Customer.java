@@ -185,7 +185,7 @@ public class Customer {
 	public static void makePayment(int pay, ArrayList<PaymentPlan> plan, Customer me, int index) {
 		index -= 1;
 		int newMoneyOwed = (plan.get(index).getMoneyOwed()-pay);
-		payments.add(me.username + " paid " + String.valueOf(pay) + " for " + plan.get(index).getCar());
+		payments.add(me.username + " paid $" + String.valueOf(pay) + " for " + plan.get(index).getCar());
 		plan.get(index).setMoneyOwed(newMoneyOwed);
 		PaymentPlan.plansList.get(index).setMoneyOwed(newMoneyOwed);
 		PaymentPlan update = new PaymentPlan(newMoneyOwed, PaymentPlan.plansList.get(index).getCar(), me.username);
