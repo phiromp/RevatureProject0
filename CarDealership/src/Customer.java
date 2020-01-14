@@ -46,11 +46,11 @@ public class Customer {
 		this.username = username;
 	}
 
-	public static void CustomerSignIn(Scanner sc) {
+	public static void CustomerSignIn() {
 		System.out.println("Enter username: ");
-		String user = sc.next();
+		String user = CarDealership.sc.next();
 		System.out.println("Enter password: ");
-		String pass = sc.next();
+		String pass = CarDealership.sc.next();
 		//boolean success = true;
 		// Check if customer exists
 
@@ -58,12 +58,12 @@ public class Customer {
 		
 		if(validUser) {
 			Customer me = new Customer(user,pass);
-			customerHome(sc, me);
+			customerHome(me);
 		}
 		else {
 			//if(!success)
 			System.out.println("unsuccessful");
-			CarDealership.mainMenu(sc);
+			CarDealership.mainMenu();
 		}
 	}
 
@@ -79,7 +79,7 @@ public class Customer {
 		return false;
 	}
 
-	private static void customerHome(Scanner sc, Customer me) {
+	private static void customerHome(Customer me) {
 		System.out.println("\nWelcome to the Customer home!");
 		System.out.println("[1] View the cars on the lot");
 		System.out.println("[2] Make an offer for a car");
@@ -87,50 +87,50 @@ public class Customer {
 		System.out.println("[4] View my remaining payments for a car");
 		System.out.println("[5] Signout");
 		
-		int input = sc.nextInt();
+		int input = CarDealership.sc.nextInt();
   
 		switch (input) { 
 			case 1: 
 				displayCars();
-				customerHome(sc, me);
+				customerHome(me);
 				break;
 			case 2:
-				makeOffer(sc, me);
+				makeOffer(me);
 				break; 
 			case 3: 
-				viewMyCars(sc, me);
+				viewMyCars(me);
 				break;
 			case 4: 
-				remainPay(sc, me);
+				remainPay(me);
 				break; 
 			case 5:
-				CarDealership.mainMenu(sc);
+				CarDealership.mainMenu();
 			default:
 				System.out.println("not valid option"); 
-				customerHome(sc, me); 
+				customerHome(me); 
 		} 
 	}
 
-	private static void viewMyCars(Scanner sc, Customer me) {
+	private static void viewMyCars(Customer me) {
 		for (Map.Entry<String,String> entry : myCars.entrySet()) {  
 			if(entry.getValue().equals(me.username))
 				System.out.println(entry.getKey());
     	} 
-		customerHome(sc, me);
+		customerHome(me);
 	} 
 
-	private static void makeOffer(Scanner sc, Customer me) {
+	private static void makeOffer(Customer me) {
 		displayCars();
 		System.out.println("Which car would you like to make an offer on?");
-		int carChoice = sc.nextInt();
+		int carChoice = CarDealership.sc.nextInt();
 		System.out.println("How much would you like to offer ($)?");
-		int carOffer = sc.nextInt();
+		int carOffer = CarDealership.sc.nextInt();
 		
 		String offerMessage = me.getUsername() + " offered $"+ Integer.toString(carOffer) +" on the " + carList.get(carChoice-1);
 		Employee.offerList.add(offerMessage);
 		CarDealership.logger.info(offerMessage);
 		
-		customerHome(sc, me);
+		customerHome(me);
 	}
 
 	static void displayCars() {
@@ -139,7 +139,7 @@ public class Customer {
 		}
 	}
 	
-	private static void remainPay(Scanner sc, Customer me) {
+	private static void remainPay(Customer me) {
 		
 		PaymentPlan plan = deserialize();		
             
@@ -153,27 +153,31 @@ public class Customer {
         System.out.println("[1] yes");
         System.out.println("[2] no");
         
-        int input = sc.nextInt();
+        int input = CarDealership.sc.nextInt();
         
         switch (input) { 
 		case 1: 
 			System.out.println("Enter how much ($): ");
-			int pay = sc.nextInt();
-			payments.add(me.username + " paid " + String.valueOf(pay) + " for " + plan.getCar());
-			plan.setMoneyOwed(plan.getMoneyOwed()-pay);
-			PaymentPlan.serialize(plan);
-			customerHome(sc, me);
+			int pay = CarDealership.sc.nextInt();
+			makePayment(pay, plan, me);
+			customerHome(me);
 			break;
 		case 2:
-			customerHome(sc, me);
+			customerHome(me);
 			break; 
 		default:
 			System.out.println("not valid option"); 
-			customerHome(sc, me); 
+			customerHome(me); 
         } 
 	}
 
 	
+	public static void makePayment(int pay, PaymentPlan plan, Customer me) {
+		payments.add(me.username + " paid " + String.valueOf(pay) + " for " + plan.getCar());
+		plan.setMoneyOwed(plan.getMoneyOwed()-pay);
+		PaymentPlan.serialize(plan);		
+	}
+
 	public static PaymentPlan deserialize() {
 		String filename = "file.ser";
 		try
@@ -194,8 +198,9 @@ public class Customer {
         catch(IOException ex) 
         { 
             System.out.println("IOException is caught"); 
+            
         } 
-          
+        
         catch(ClassNotFoundException ex) 
         { 
             System.out.println("ClassNotFoundException is caught"); 

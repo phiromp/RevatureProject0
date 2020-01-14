@@ -18,8 +18,21 @@ public class CarDealershipTest {
 	}
 	
 	@Test
-	public void testValidUser() {		
-		assertFalse(Customer.checkValidUser("joe", "pass"));
+	public void testValidUser() {
+		CarDealership.customerList.add(new Customer("joe", "pass"));
+		assertTrue(Customer.checkValidUser("joe", "pass"));
+	}
+	
+	@Test
+	public void testInvalidUser2() {
+		CarDealership.customerList.add(new Customer("joe", "pass"));
+		assertFalse(Customer.checkValidUser("joey", "pass"));
+	}
+	
+	@Test
+	public void testValidUser2() {
+		CarDealership.customerList.add(new Customer("12345", "54321"));
+		assertTrue(Customer.checkValidUser("12345", "54321"));
 	}
 	
 	@Test
@@ -57,4 +70,27 @@ public class CarDealershipTest {
 		assertNotEquals(321, (test.getMonthlyPayment()));
 		assertFalse("bob".equals(test.getUser()));
 	}
+	
+	@Test
+	public void testMakePayment() {
+		PaymentPlan plan = new PaymentPlan(1000, "car", "user");
+		PaymentPlan.serialize(plan);
+		Customer me = new Customer("user", "pass");
+		Customer.makePayment(100, plan, me);
+		PaymentPlan test = Customer.deserialize();
+		
+		assertEquals(900, test.getMoneyOwed());
+	}
+	
+	@Test
+	public void testMakePaymentWrong() {
+		PaymentPlan plan = new PaymentPlan(1000, "car", "user");
+		PaymentPlan.serialize(plan);
+		Customer me = new Customer("user", "pass");
+		Customer.makePayment(100, plan, me);
+		PaymentPlan test = Customer.deserialize();
+		
+		assertNotEquals(100, test.getMoneyOwed());
+	}
+	
 }

@@ -1,10 +1,4 @@
-import java.awt.List;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Scanner;
 import org.apache.log4j.*;
@@ -13,11 +7,11 @@ import org.apache.log4j.*;
 ## Description
    The Car Dealership app is a console-based application that facilitates the purchasing of cars. 
    An employee can add cars to the lot and manage offers for those cars, while a customer can view the cars on the lot and make offers.
-    
+
 ## Purpose
    We want to see that you can meet deadlines and that you can code. You are expected to complete the following requirements and give a 
    5 minute presentation demonstrating your application.
-   
+
 ## Requirements
 1. Functionality should reflect the below user stories.
 2. Data persisted through serialization.
@@ -32,18 +26,18 @@ import org.apache.log4j.*;
 public class CarDealership {
 	static ArrayList<Object> customerList = new ArrayList<Object>();
 	static final Logger logger = Logger.getLogger(CarDealership.class);
-	static Scanner sc = new Scanner(System.in); 
+	public static Scanner sc = new Scanner(System.in); 
 
 	public static void main(String[] args) throws IOException {
 		logger.setLevel(Level.INFO);
 		customerList.add(new Customer("joe", "pass"));
 		customerList.add(new Customer("abc", "123"));
 
-		mainMenu(sc);
+		mainMenu();
 
 	}
 
-	public static void mainMenu(Scanner sc) {
+	public static void mainMenu() {
 		int input;
 
 		System.out.println("\nWelcome to the Main Menu!");
@@ -54,23 +48,23 @@ public class CarDealership {
 		input = sc.nextInt();
 		switch (input) {
 		case 1:
-			NewUser(sc);
+			NewUser();
 			break;
 		case 2:
-			Customer.CustomerSignIn(sc);
+			Customer.CustomerSignIn();
 			break;
 		case 3:
 			new Employee();
-			Employee.employeeMainMenu(sc);
+			Employee.empSignIn();
 			break;
 		default:
 			System.out.println("not valid option");
-			mainMenu(sc);
+			mainMenu();
 		
 		}
 	}
 
-	private static void NewUser(Scanner sc) {
+	private static void NewUser() {
 		System.out.println("Sign up for a new account.");
 		System.out.println("Enter desired username: ");
 		String user = sc.next();
@@ -80,7 +74,7 @@ public class CarDealership {
 		customerList.add(guy);
 
 		System.out.println("Account Created!");
-		mainMenu(sc);
+		mainMenu();
 	}
 
 }
