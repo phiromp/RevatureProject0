@@ -141,7 +141,7 @@ public class Customer {
 	private static void remainPay(Customer me) {
 		
 		ArrayList<PaymentPlan> plan = deserialize();		
-        int count = 0;
+        int count = 1;
 		for(PaymentPlan myPlan : plan) {
 			if(myPlan.getUser().equals(me.username)) {
 		        //System.out.println("Object has been de-serialized "); 
@@ -184,7 +184,8 @@ public class Customer {
 		payments.add(me.username + " paid " + String.valueOf(pay) + " for " + plan.get(index).getCar());
 		plan.get(index).setMoneyOwed(newMoneyOwed);
 		PaymentPlan.plansList.get(index).setMoneyOwed(newMoneyOwed);
-		//PaymentPlan.serialize(PaymentPlan.plansList);		
+		PaymentPlan update = new PaymentPlan(newMoneyOwed, PaymentPlan.plansList.get(index).getCar(), me.username);
+		PaymentPlan.serialize(update);		
 	}
 
 	public static ArrayList<PaymentPlan> deserialize() {

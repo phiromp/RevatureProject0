@@ -2,6 +2,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.ListIterator;
 
 @SuppressWarnings("serial")
 public class PaymentPlan implements java.io.Serializable {
@@ -20,7 +21,21 @@ public class PaymentPlan implements java.io.Serializable {
 	}
 
 	static void serialize(PaymentPlan plan) {
-		plansList.add(plan);
+		
+		// add plan to list, make sure not duplicate
+		// if car is already in plan update it or it effects monthly pay
+		boolean alreadyExists = false;
+		ListIterator<PaymentPlan> itr = plansList.listIterator();
+		while(itr.hasNext()){
+			PaymentPlan curr = itr.next();
+		    if(curr.getCar().equals(plan.getCar())){
+		        curr.setMoneyOwed(plan.getMoneyOwed());
+		        alreadyExists = true;
+		    }
+		}
+		if(!alreadyExists)
+			plansList.add(plan);
+		
 		String filename = "file.ser"; 
         
         // Serialization  
