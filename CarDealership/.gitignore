@@ -1,2 +1,8 @@
 /bin/
 /target/
+
+# Log file
+*.log
+
+#properties 
+CarDealership/resources/database.properties

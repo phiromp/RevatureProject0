@@ -1,4 +1,4 @@
-import java.io.IOException;
+package com.dealership.driver;
 import java.util.ArrayList;
 import java.util.Scanner;
 import org.apache.log4j.*;
@@ -27,18 +27,10 @@ public class CarDealership {
 	static ArrayList<Object> customerList = new ArrayList<Object>();
 	static final Logger logger = Logger.getLogger(CarDealership.class);
 	public static Scanner sc = new Scanner(System.in); 
-
-	public static void main(String[] args) throws IOException {
-		logger.setLevel(Level.INFO);
-		customerList.add(new Customer("joe", "pass"));
-		customerList.add(new Customer("abc", "123"));
-
-		mainMenu();
-
-	}
-
+	
 	public static void mainMenu() {
 		int input;
+		logger.setLevel(Level.INFO);
 
 		System.out.println("\nWelcome to the Main Menu!");
 		System.out.println("[1] New User Sign Up");

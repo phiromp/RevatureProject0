@@ -7,6 +7,11 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
+import com.dealership.driver.CarDealership;
+import com.dealership.driver.Customer;
+import com.dealership.driver.Employee;
+import com.dealership.driver.PaymentPlan;
+
 public class CarDealershipTest {
 
 	@Test
