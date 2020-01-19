@@ -1,4 +1,5 @@
 package com.dealership.driver;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -21,7 +22,7 @@ public class Employee {
 		super();
 	}
 
-	public static void employeeMainMenu() {
+	public static void employeeMainMenu() throws SQLException {
 		System.out.println("\nWelcome to the Employee Main Menu!");
 		System.out.println("[1] Add/Remove car from the lot");
 		System.out.println("[2] View car offers");
@@ -53,7 +54,7 @@ public class Employee {
 	}
 
 
-	private static void viewCarOffers() {
+	private static void viewCarOffers() throws SQLException {
 		for(int i=1; i<=offerList.size(); i++) {
 			System.out.println("["+i+"] "+offerList.get(i-1));
 		} 
@@ -84,7 +85,7 @@ public class Employee {
 		}
 	}
 
-	private static void changeCars() {
+	private static void changeCars() throws SQLException {
 		System.out.println("\n[1] Add car to the lot");
 		System.out.println("[2] Remove car from the lot");
 		int input = CarDealership.sc.nextInt();
@@ -114,7 +115,7 @@ public class Employee {
 		}
 	}
 	
-	public static void empSignIn() {
+	public static void empSignIn() throws SQLException {
 		System.out.println("Enter username: ");
 		String user = CarDealership.sc.next();
 		System.out.println("Enter password: ");
@@ -140,7 +141,7 @@ public class Employee {
 		return false;
 	}
 
-	private static void changeOffers(boolean accept) {
+	private static void changeOffers(boolean accept) throws SQLException {
 		System.out.println("Which offer?");
 		int i = CarDealership.sc.nextInt();
 		// make temp string so system can remove the pending offers on the car that has been sold

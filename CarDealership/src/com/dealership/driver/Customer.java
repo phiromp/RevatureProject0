@@ -2,10 +2,14 @@ package com.dealership.driver;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.dealership.util.ConnectionFactory;
 
 // As a customer, I can view the cars on the lot.
 // As a customer, I can make an offer for a car.
@@ -46,25 +50,28 @@ public class Customer {
 		this.username = username;
 	}
 
-	public static void CustomerSignIn() {
+	public static void CustomerSignIn() throws SQLException {
 		System.out.println("Enter username: ");
 		String user = CarDealership.sc.next();
 		System.out.println("Enter password: ");
 		String pass = CarDealership.sc.next();
 		//boolean success = true;
 		// Check if customer exists
-
-		boolean validUser = checkValidUser(user, pass);
 		
-		if(validUser) {
-			Customer me = new Customer(user,pass);
-			customerHome(me);
+		String sql = "select * from project0.customer";
+		ResultSet rs = ConnectionFactory.sendCommand(sql);
+		
+		while(rs.next()) {
+			String name = rs.getString(2);
+			if(user.equals(name) && pass.equals(rs.getString(3))) {
+				Customer me = new Customer(user,pass);
+				customerHome(me);
+			}
 		}
-		else {
-			//if(!success)
-			System.out.println("unsuccessful");
-			CarDealership.mainMenu();
-		}
+		
+		System.out.println("unsuccessful");
+		CarDealership.mainMenu();
+		
 	}
 
 	public static boolean checkValidUser(String user, String pass) {
@@ -79,7 +86,7 @@ public class Customer {
 		return false;
 	}
 
-	private static void customerHome(Customer me) {
+	private static void customerHome(Customer me) throws SQLException {
 		System.out.println("\nWelcome to the Customer home!");
 		System.out.println("[1] View the cars on the lot");
 		System.out.println("[2] Make an offer for a car");
@@ -111,7 +118,7 @@ public class Customer {
 		} 
 	}
 
-	private static void viewMyCars(Customer me) {
+	private static void viewMyCars(Customer me) throws SQLException {
 		for (Map.Entry<String,String> entry : myCars.entrySet()) {  
 			if(entry.getValue().equals(me.username))
 				System.out.println(entry.getKey());
@@ -119,7 +126,7 @@ public class Customer {
 		customerHome(me);
 	} 
 
-	private static void makeOffer(Customer me) {
+	private static void makeOffer(Customer me) throws SQLException {
 		displayCars();
 		System.out.println("Which car would you like to make an offer on?");
 		int carChoice = CarDealership.sc.nextInt();
@@ -139,7 +146,7 @@ public class Customer {
 		}
 	}
 	
-	private static void remainPay(Customer me) {
+	private static void remainPay(Customer me) throws SQLException {
 		
 		if(deserialize() == null)
 			customerHome(me);

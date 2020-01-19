@@ -18,6 +18,12 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
-	<classpathentry excluding="**/*.java" kind="src" path="resources"/>
+	<classpathentry excluding="**" kind="src" output="target/classes" path="resources">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/Phirom Peterschmidt/.m2/repository/org/postgresql/postgresql/42.2.5/postgresql-42.2.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Phirom Peterschmidt/.m2/repository/org/postgresql/postgresql/42.2.5/postgresql-42.2.5-sources.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

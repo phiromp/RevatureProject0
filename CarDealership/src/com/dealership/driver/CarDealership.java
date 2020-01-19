@@ -1,7 +1,10 @@
 package com.dealership.driver;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import org.apache.log4j.*;
+
+import com.dealership.util.ConnectionFactory;
 
 /*# Car Dealership
 ## Description
@@ -28,7 +31,7 @@ public class CarDealership {
 	static final Logger logger = Logger.getLogger(CarDealership.class);
 	public static Scanner sc = new Scanner(System.in); 
 	
-	public static void mainMenu() {
+	public static void mainMenu() throws SQLException {
 		int input;
 		logger.setLevel(Level.INFO);
 
@@ -56,7 +59,7 @@ public class CarDealership {
 		}
 	}
 
-	private static void NewUser() {
+	private static void NewUser() throws SQLException {
 		System.out.println("Sign up for a new account.");
 		System.out.println("Enter desired username: ");
 		String user = sc.next();
@@ -64,7 +67,10 @@ public class CarDealership {
 		String pass = sc.next();
 		Customer guy = new Customer(user, pass);
 		customerList.add(guy);
-
+		
+		String sql = "insert into project0.customer (username, user_password) values('" + user + "', '" + pass + "')";
+		ConnectionFactory.insertCommand(sql);
+		
 		System.out.println("Account Created!");
 		mainMenu();
 	}
