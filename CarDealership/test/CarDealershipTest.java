@@ -18,16 +18,5 @@ public class CarDealershipTest {
 	public void testRandom() {
 		assertEquals(5,5);
 	}
-	
-	@Test
-	public void testInvalidEmp() {
-		Employee.employeeList.put("admin", "admin");
-		assertFalse(Employee.checkValidEmp("incorrect", "wrong"));
-	}
-	
-	@Test
-	public void testValidEmp() {
-		Employee.employeeList.put("admin", "admin");
-		assertTrue(Employee.checkValidEmp("admin", "admin"));
-	}
+
 }

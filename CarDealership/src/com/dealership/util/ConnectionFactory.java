@@ -69,7 +69,7 @@ public class ConnectionFactory {
 		Connection conn = getConnection();
 		
 		try {
-			Statement stmt = conn.createStatement();
+			Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_READ_ONLY);
 			ResultSet rs = stmt.executeQuery(sql);
 			return rs;
 			

@@ -27,7 +27,6 @@ import com.dealership.util.ConnectionFactory;
 */
 
 public class CarDealership {
-	static ArrayList<Object> customerList = new ArrayList<Object>();
 	static final Logger logger = Logger.getLogger(CarDealership.class);
 	public static Scanner sc = new Scanner(System.in); 
 	
@@ -65,8 +64,6 @@ public class CarDealership {
 		String user = sc.next();
 		System.out.println("Enter desired password: ");
 		String pass = sc.next();
-		Customer guy = new Customer(user, pass);
-		customerList.add(guy);
 		
 		String sql = "insert into project0.customer (username, user_password) values('" + user + "', '" + pass + "')";
 		ConnectionFactory.insertCommand(sql);

@@ -1,9 +1,12 @@
 package com.dealership.driver;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import com.dealership.util.ConnectionFactory;
 
 // 1. As an employee, I can add a car to the lot.
 // 2. As an employee, I can accept or reject an offer for a car.
@@ -11,16 +14,6 @@ import java.util.Map;
 // 4. As an employee, I can view all payments.
 
 public class Employee {
-	static ArrayList<String> offerList = new ArrayList<String>();
-	public static Map<String, String> employeeList;
-	static {
-	    employeeList = new HashMap<>();
-	    employeeList.put("admin", "admin");
-	}
-	
-	public Employee() {
-		super();
-	}
 
 	public static void employeeMainMenu() throws SQLException {
 		System.out.println("\nWelcome to the Employee Main Menu!");
@@ -38,9 +31,7 @@ public class Employee {
 			viewCarOffers();
 			break;
 		case 3:
-			for(String entry : Customer.payments) {
-				System.out.println(entry);
-			}
+			viewPayments();
 			employeeMainMenu();
 			break;
 		case 4:
@@ -54,11 +45,38 @@ public class Employee {
 	}
 
 
+	private static void viewPayments() throws SQLException {
+		
+		String sql = "select c2.username, amount, make, model, car_year " + 
+				     "from project0.payment p " + 
+				     "left join project0.car c on p.car_id = c.car_id " + 
+				     "left join project0.customer c2 on c2.customerid = p.customerid";
+		
+		ResultSet rs = ConnectionFactory.sendCommand(sql);
+		int i=0;
+		while(rs.next()) {
+			i++;
+			System.out.println( "[" +i+"] " + rs.getString(1) + " paid $" + rs.getInt(2) + 
+								" on : " + rs.getInt(5) + " " + rs.getString(3) + " " + rs.getString(4) );
+		}
+	}
+
+
 	private static void viewCarOffers() throws SQLException {
-		for(int i=1; i<=offerList.size(); i++) {
-			System.out.println("["+i+"] "+offerList.get(i-1));
-		} 
-		if(offerList.size()>0) {
+		String sql = "select c2.username, amount, make, model, car_year " + 
+			     "from project0.car_offer co " + 
+			     "left join project0.car c on co.car_id = c.car_id " + 
+			     "left join project0.customer c2 on c2.customerid = co.customerid";
+	
+		ResultSet rs = ConnectionFactory.sendCommand(sql);
+		int i=0;
+		while(rs.next()) {
+		i++;
+		System.out.println( "[" +i+"] " + rs.getString(1) + " offer $" + rs.getInt(2) + 
+							" on : " + rs.getInt(5) + " " + rs.getString(3) + " " + rs.getString(4) );
+		}
+		
+		if(i > 0) {
 			System.out.println("\n[1] Home");
 			System.out.println("[2] Accept offer");
 			System.out.println("[3] Reject offer");
@@ -95,7 +113,8 @@ public class Employee {
 			String in = CarDealership.sc.nextLine();
 			System.out.println("\n[1] Enter car to add to lot (YEAR MAKE MODEL)");
 			in = CarDealership.sc.nextLine();
-			Customer.carList.add(in);
+			// TODO add car to data base
+			
 			CarDealership.logger.info("Employee added " + in + " the lot");
 			Customer.carCount++;
 			employeeMainMenu();
@@ -104,8 +123,9 @@ public class Employee {
 			System.out.println("\nWhich car would you like to remove");
 			Customer.displayCars();
 			input = CarDealership.sc.nextInt();
-			CarDealership.logger.info("Employee removed " + Customer.carList.get(input-1) );
-			Customer.carList.remove(input-1);
+			//CarDealership.logger.info("Employee removed " + Customer.carList.get(input-1) );
+			// TODO remove car from datavase 
+			
 			Customer.carCount--;
 			employeeMainMenu();
 			break;
@@ -121,62 +141,66 @@ public class Employee {
 		System.out.println("Enter password: ");
 		String pass = CarDealership.sc.next();
 		
-		boolean validEmp = checkValidEmp(user, pass);
-		if(validEmp) {
-			System.out.println("Employee signed in");
-			employeeMainMenu();
-		}
-		else {
-			System.out.println("Failed sign in");
-			CarDealership.mainMenu();
-		}
-	}
-	
-	
-	public static boolean checkValidEmp(String user, String pass) {
-		if(employeeList.containsKey(pass)) {
-			if(employeeList.containsValue(user))
-				return true;
-		}
-		return false;
-	}
-
-	private static void changeOffers(boolean accept) throws SQLException {
-		System.out.println("Which offer?");
-		int i = CarDealership.sc.nextInt();
-		// make temp string so system can remove the pending offers on the car that has been sold
-		String temp = offerList.get(i-1).split("on the ")[1];
-		String user = offerList.get(i-1).split(" ")[0];
-		int offerAmount = Integer.parseInt(offerList.get(i-1).split(" ")[2].substring(1));
-		if(accept) {
-			Customer.myCars.put(temp, user);
-			CarDealership.logger.info("Employee accepted offer: " + offerList.get(i-1));
-			
-			Iterator<String> iter = offerList.iterator();
-			while(iter.hasNext()) {
-				if(iter.hasNext()) {
-					String offer = iter.next();
-					if(offer.contains(temp)) {
-						CarDealership.logger.info("System removed pending offer: " + offer);
-						iter.remove();
-						CarDealership.logger.info("Employee removed " + temp);
-						Customer.carList.remove(temp);
-						Customer.carCount--;
-						PaymentPlan plan = new PaymentPlan(offerAmount, temp, user);
-						PaymentPlan.serialize(plan);
-						PaymentPlan.planCount++;
-					}
-				}
+		String sql = "select * from project0.employee";
+		ResultSet rs = ConnectionFactory.sendCommand(sql);
+		
+		while(rs.next()) {
+			if(user.equals(rs.getString(2)) && pass.equals(rs.getString(3))) {
+				System.out.println("Employee signed in");
+				employeeMainMenu();
 			}
 		}
-			/*
-			 * for(String s: offerList) { if(s.contains(temp)) {
-			 * CarDealership.logger.info("System removed pending offer: " + s);
-			 * offerList.remove(s); } }
-			 */
+			System.out.println("Failed sign in");
+			CarDealership.mainMenu();
+	}
+	
+
+	private static void changeOffers(boolean accept) throws SQLException {
+		String sql = "select * from project0.car_offer";
+		ResultSet rs = ConnectionFactory.sendCommand(sql);
+		
+		System.out.println("Which offer?");
+		int i = CarDealership.sc.nextInt();
+		System.out.println("i = " + i);
+		int offerID = 0;
+		int carID = 0;
+		int index=0;
+		int amount=0;
+		int user=0;
+		while(rs.next()) {
+			index++;
+			System.out.println("index: " + index);
+			if(index == i) {
+				offerID = rs.getInt(1);
+				carID = rs.getInt(4);
+				amount = rs.getInt(2);
+				user = rs.getInt(3);
+			}
+		}
+		
+		if(accept) {
+			// TODO
+			// log transactions
+			// insert into payment plan
+			// add customer id into car table
+			CarDealership.logger.info("Employee accepted offer on: " +  Car.toString(carID));
+			
+			sql = "update project0.car set customerid = " + user + " where car_id = " + carID ;
+			ConnectionFactory.insertCommand(sql);
+			
+			sql = "insert into project0.payment_plan ( amount_owed, monthly_payment, car_id) values "
+					+ "( " + amount + ", " + (amount/60) + ", " + carID + ")";
+			ConnectionFactory.insertCommand(sql);
+			
+			sql = "delete from project0.car_offer where car_id = " + carID;
+			ConnectionFactory.insertCommand(sql);
+		}
+
 		else {
-			CarDealership.logger.info("Employee declined offer: " + offerList.get(i-1));
-			offerList.remove(i-1);
+			CarDealership.logger.info("Employee declined offer: " + Car.toString(carID));
+			System.out.println(offerID);
+			sql = "delete from project0.car_offer where offer_id = " + offerID;
+			ConnectionFactory.insertCommand(sql);
 		}
 		employeeMainMenu();
 	}

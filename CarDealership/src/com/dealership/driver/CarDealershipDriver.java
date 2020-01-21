@@ -18,11 +18,4 @@ public class CarDealershipDriver {
 	
 	}
 }
-/*
- * String sql2 = "select * from project0.customer"; Connection conn =
- * ConnectionFactory.getConnection(); try { Statement stmt =
- * conn.createStatement(); ResultSet rs = stmt.executeQuery(sql2); if(rs.next())
- * { int id = rs.getInt("customerid"); System.out.println(id); } } catch
- * (SQLException e) { e.printStackTrace(); } finally { try { conn.close(); }
- * catch (SQLException e) { e.printStackTrace(); } }
- */
+
