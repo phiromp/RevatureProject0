@@ -32,7 +32,7 @@ public class ConnectionFactory {
 		
 	}
 	
-	private ConnectionFactory() {
+	public ConnectionFactory() {
 		
 		Properties prop = new Properties();
 		
@@ -50,7 +50,7 @@ public class ConnectionFactory {
 		
 	}
 	
-	private Connection createConnection() {
+	public Connection createConnection() {
 		
 		Connection conn = null;
 		

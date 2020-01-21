@@ -50,8 +50,8 @@ public class Offers {
 		String sql = "update project0.car set customerid = " + user + " where car_id = " + carID ;
 		ConnectionFactory.insertCommand(sql);
 		
-		sql = "insert into project0.payment_plan ( amount_owed, monthly_payment, car_id) values "
-				+ "( " + amount + ", " + (amount/60) + ", " + carID + ")";
+		sql = "insert into project0.payment_plan ( amount_owed, monthly_payment, car_id, customerid) values "
+				+ "( " + amount + ", " + (amount/60) + ", " + carID + ", " + user + ")";
 		ConnectionFactory.insertCommand(sql);
 		
 		sql = "delete from project0.car_offer where car_id = " + carID;
