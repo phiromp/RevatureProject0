@@ -182,7 +182,10 @@ public class Customer {
 	}
 	
 	public static void makePayment(int pay, int index) throws SQLException {
-		String sql = "select * from project0.payment_plan";
+		String sql = "select payment_plan_id, amount_owed, c.car_id, c2.customerid " + 
+					 "from project0.payment_plan pp " + 
+					 "left join project0.car c on pp.car_id = c.car_id " + 
+					 "left join project0.customer c2 on c2.customerid = c.customerid;";
 		ResultSet rs = ConnectionFactory.sendCommand(sql);
 		
 		int i = 0;
@@ -190,6 +193,9 @@ public class Customer {
 			i++;
 			if (index == i) {
 				sql = "update project0.payment_plan set amount_owed = " + (rs.getInt(2)-pay) + " where payment_plan_id = " + rs.getInt(1);
+				ConnectionFactory.insertCommand(sql);
+				
+				sql = "insert into project0.payment (amount, customerid, car_id) values ( " + pay + ", " + rs.getInt(4) + ", " + rs.getInt(3) + ")";
 				ConnectionFactory.insertCommand(sql);
 			}
 		}

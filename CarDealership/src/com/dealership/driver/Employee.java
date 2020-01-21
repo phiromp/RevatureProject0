@@ -115,7 +115,6 @@ public class Employee {
 			in = CarDealership.sc.nextLine();
 			String inArr[] = in.split(" ");
 			
-			// TODO add car to data base
 			String sql = "insert into project0.car (make, model, car_year) values ( '" + inArr[1] + "', '" + inArr[2] + "', " + inArr[0] + " )";
 			ConnectionFactory.insertCommand(sql);
 			
@@ -197,10 +196,7 @@ public class Employee {
 		}
 		
 		if(accept) {
-			// TODO
-			// log transactions
-			// insert into payment plan
-			// add customer id into car table
+
 			CarDealership.logger.info("Employee accepted offer on: " +  Car.toString(carID));
 			
 			sql = "update project0.car set customerid = " + user + " where car_id = " + carID ;
