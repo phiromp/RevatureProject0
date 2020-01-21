@@ -113,7 +113,11 @@ public class Employee {
 			String in = CarDealership.sc.nextLine();
 			System.out.println("\n[1] Enter car to add to lot (YEAR MAKE MODEL)");
 			in = CarDealership.sc.nextLine();
+			String inArr[] = in.split(" ");
+			
 			// TODO add car to data base
+			String sql = "insert into project0.car (make, model, car_year) values ( '" + inArr[1] + "', '" + inArr[2] + "', " + inArr[0] + " )";
+			ConnectionFactory.insertCommand(sql);
 			
 			CarDealership.logger.info("Employee added " + in + " the lot");
 			Customer.carCount++;
@@ -123,9 +127,23 @@ public class Employee {
 			System.out.println("\nWhich car would you like to remove");
 			Customer.displayCars();
 			input = CarDealership.sc.nextInt();
-			//CarDealership.logger.info("Employee removed " + Customer.carList.get(input-1) );
-			// TODO remove car from datavase 
 			
+			sql = "select * from project0.car";
+			ResultSet rs = ConnectionFactory.sendCommand(sql);
+			int i=0;
+			int removeID = 0;
+			while(rs.next()) {
+				if(rs.getInt(5) == 0) { // only accessed un-owned cars
+					i++;
+					if(i == input) {
+						removeID = rs.getInt(1);
+					}
+				}
+			}
+			CarDealership.logger.info("Employee removed " + Car.toString(removeID) );
+			sql = "delete from project0.car where car_id = " + removeID;
+			ConnectionFactory.insertCommand(sql);
+
 			Customer.carCount--;
 			employeeMainMenu();
 			break;
