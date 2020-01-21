@@ -1,93 +1,77 @@
 package com.dealership.driver;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.ListIterator;
 
-@SuppressWarnings("serial")
-public class PaymentPlan implements java.io.Serializable {
-	private int moneyOwed; 
-	private int monthlyPayment;
-	static int planCount = 0;
-	private String car;
-	private String user;
-	static ArrayList<PaymentPlan> plansList = new ArrayList<PaymentPlan>();
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import com.dealership.util.ConnectionFactory;
+
+public class PaymentPlan {
+
 	
-	public PaymentPlan(int price, String car, String user) {
-		this.moneyOwed = price;
-		this.monthlyPayment = (price/60);
-		this.car = car;
-		this.user = user;
-	}
-
-	static void serialize(PaymentPlan plan) {
+	static void remainPay(Customer me) throws SQLException {
 		
-		// add plan to list, make sure not duplicate
-		// if car is already in plan update it or it effects monthly pay
-		boolean alreadyExists = false;
-		ListIterator<PaymentPlan> itr = plansList.listIterator();
-		while(itr.hasNext()){
-			PaymentPlan curr = itr.next();
-		    if(curr.getCar().equals(plan.getCar())){
-		    	if(plan.getMoneyOwed() <= 0) {
-					itr.remove();
-				}
-		    	else {
-		    		curr.setMoneyOwed(plan.getMoneyOwed());
-		    	}
-		        alreadyExists = true;
-		    }
+		String sql = "select * from project0.payment_plan";
+		ResultSet rs = ConnectionFactory.sendCommand(sql);
+		int i=0;
+		while(rs.next()) {
+			i++;
+			System.out.println("[" +i+"] " + Car.toString(rs.getInt(4)));
+			System.out.println("   Remaining balance: $" + rs.getInt(2));
+			System.out.println("   Monthly Payment: $" + rs.getInt(3));
 		}
-		if(!alreadyExists)
-			plansList.add(plan);
 		
-		String filename = "file.ser"; 
-        
-        // Serialization  
-        try
-        {    
-            //Saving of object in a file 
-            FileOutputStream file = new FileOutputStream(filename); 
-            ObjectOutputStream out = new ObjectOutputStream(file); 
-              
-            // Method for serialization of object 
-            out.writeObject(plansList); 
-              
-            out.close(); 
-            file.close(); 
-              
-            //System.out.println("Object has been serialized"); 
-  
-        } 
-          
-        catch(IOException ex) 
-        { 
-            System.out.println("IOException is caught"); 
-        } 
+		if(i!=0) {
+	        System.out.println("Make a payment?");
+	        System.out.println("[1] yes");
+	        System.out.println("[2] no");
+	        
+	        int input = CarDealership.sc.nextInt();
+	        
+	        switch (input) { 
+			case 1: 
+		        
+		        System.out.println("Which car");
+		        int index = CarDealership.sc.nextInt();
+		        
+				System.out.println("Enter how much ($): ");
+				int pay = CarDealership.sc.nextInt();
+				PaymentPlan.makePayment(pay, index);
+				Customer.customerHome(me);
+				break;
+			case 2:
+				Customer.customerHome(me);
+				break; 
+			default:
+				System.out.println("not valid option"); 
+				Customer.customerHome(me); 
+	        }
+		}
+        else {
+        	System.out.println("All cars are paid off");
+        	Customer.customerHome(me);
+        }
 	}
-
-	public int getMoneyOwed() {
-		return moneyOwed;
+	
+	private static void makePayment(int pay, int index) throws SQLException {
+		
+		String sql = "select payment_plan_id, amount_owed, c.car_id, c2.customerid " + 
+					 "from project0.payment_plan pp " + 
+					 "left join project0.car c on pp.car_id = c.car_id " + 
+					 "left join project0.customer c2 on c2.customerid = c.customerid;";
+		
+		ResultSet rs = ConnectionFactory.sendCommand(sql);
+		
+		int i = 0;
+		while(rs.next()) {
+			i++;
+			if (index == i) {
+				sql = "update project0.payment_plan set amount_owed = " + (rs.getInt(2)-pay) + " where payment_plan_id = " + rs.getInt(1);
+				ConnectionFactory.insertCommand(sql);
+				
+				sql = "insert into project0.payment (amount, customerid, car_id) values ( " + pay + ", " + rs.getInt(4) + ", " + rs.getInt(3) + ")";
+				ConnectionFactory.insertCommand(sql);
+			}
+		}
 	}
-
-	public void setMoneyOwed(int moneyOwed) {
-		this.moneyOwed = moneyOwed;
-	}
-
-	public int getMonthlyPayment() {
-		return monthlyPayment;
-	}
-
-
-	public String getCar() {
-		return car;
-	}
-
-
-	public String getUser() {
-		return user;
-	}
-
 	
 }
